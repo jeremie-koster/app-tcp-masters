@@ -27,6 +27,7 @@ class _AddResultPageState extends State<AddResultPage> {
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -41,9 +42,13 @@ class _AddResultPageState extends State<AddResultPage> {
                 ),
               ],
             ),
-            Text(
-              'Ajoute un résultat',
-              style: Theme.of(context).textTheme.titleLarge,
+            Container(
+              alignment: Alignment.center,
+              padding: EdgeInsets.all(20),
+              child: Text(
+                'Ajouter un résultat',
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
             ),
             SegmentedButton(
               emptySelectionAllowed: false,
@@ -70,7 +75,6 @@ class _AddResultPageState extends State<AddResultPage> {
             ),
             DropdownMenu(
               controller: opponentController,
-              enableFilter: true,
               leadingIcon: const Icon(Icons.person),
               label: const Text('Adversaire'),
               onSelected: (Opponent? opponent) {
@@ -91,8 +95,8 @@ class _AddResultPageState extends State<AddResultPage> {
               height: 10,
             ),
             DropdownMenu(
+              width: 170, // large enough to display 'Score' fully in the box
               controller: scoreController,
-              enableFilter: true,
               leadingIcon: const Icon(Icons.scoreboard_outlined),
               label: const Text('Score'),
               onSelected: (Score? score) {
@@ -115,10 +119,32 @@ class _AddResultPageState extends State<AddResultPage> {
             if (selectedOpponent != null &&
                 selectedScore != null &&
                 selectedResult != null)
-              Text(
-                  '${selectedResult?.resultLabel} J. KOSTER ${selectedScore?.scoreLabel} ${selectedOpponent?.opponentName}')
+              Container(
+                decoration: BoxDecoration(
+                  color: selectedResult == ResultType.victory
+                      ? Colors.green[200]
+                      : Colors.red[200],
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                padding: EdgeInsets.all(8),
+                margin: EdgeInsets.all(8),
+                child: Text(
+                    '${selectedResult?.resultLabel} J. KOSTER ${selectedScore?.scoreLabel} ${selectedOpponent?.opponentName}'),
+              )
             else
-              const Text('Merci de renseigner le résultat du match.')
+              const Text('Merci de renseigner le résultat du match.'),
+            Row(
+              children: [
+                FilledButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: Text('Confirmer'),
+                ),
+                OutlinedButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: Text('Retour'),
+                )
+              ],
+            )
           ],
         ),
       ),
