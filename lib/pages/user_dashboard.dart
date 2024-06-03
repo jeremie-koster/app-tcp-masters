@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:tcp_masters/pages/add_result.dart';
 
+import '../data/json/json_loader.dart';
+import '../models/result.dart';
+
 class DashboardPage extends StatelessWidget {
   const DashboardPage({super.key});
 
@@ -165,69 +168,72 @@ class MatchResults extends StatelessWidget {
               )
             ],
           ),
-          DataTable(
-            columns: const [
-              DataColumn(label: Text('Score')),
-              DataColumn(label: Text('Date')),
-            ],
-            rows: const [
-              DataRow(cells: [
-                DataCell(Text('J. KOSTER 7/5 A. BUCHET')),
-                DataCell(Text('26/12/2023')),
-              ]),
-              DataRow(cells: [
-                DataCell(Text('B. GROUCHKO 6/2 J. KOSTER')),
-                DataCell(Text('21/12/2023')),
-              ]),
-              DataRow(cells: [
-                DataCell(Text('J. KOSTER 6/4 A. GAILLARD')),
-                DataCell(Text('11/10/2023')),
-              ]),
-              DataRow(cells: [
-                DataCell(Text('J. KOSTER 2/6 A. GAILLARD')),
-                DataCell(Text('11/10/2023')),
-              ]),
-              DataRow(cells: [
-                DataCell(Text('J. KOSTER 2/6 A. GAILLARD')),
-                DataCell(Text('11/10/2023')),
-              ]),
-              DataRow(cells: [
-                DataCell(Text('J. KOSTER 2/6 A. GAILLARD')),
-                DataCell(Text('11/10/2023')),
-              ]),
-              DataRow(cells: [
-                DataCell(Text('J. KOSTER 2/6 A. GAILLARD')),
-                DataCell(Text('11/10/2023')),
-              ]),
-              DataRow(cells: [
-                DataCell(Text('J. KOSTER 2/6 A. GAILLARD')),
-                DataCell(Text('11/10/2023')),
-              ]),
-              DataRow(cells: [
-                DataCell(Text('J. KOSTER 2/6 A. GAILLARD')),
-                DataCell(Text('11/10/2023')),
-              ]),
-              DataRow(cells: [
-                DataCell(Text('J. KOSTER 2/6 A. GAILLARD')),
-                DataCell(Text('11/10/2023')),
-              ]),
-              DataRow(cells: [
-                DataCell(Text('J. KOSTER 2/6 A. GAILLARD')),
-                DataCell(Text('11/10/2023')),
-              ]),
-              DataRow(cells: [
-                DataCell(Text('J. KOSTER 2/6 A. GAILLARD')),
-                DataCell(Text('11/10/2023')),
-              ]),
-              DataRow(cells: [
-                DataCell(Text('J. KOSTER 2/6 A. GAILLARD')),
-                DataCell(Text('11/10/2023')),
-              ]),
-            ],
-          )
+          ResultsTable()
         ],
         // Liste de résultats
       ),
+    );
+  }
+}
+
+class ResultsTable extends StatefulWidget {
+  const ResultsTable({
+    super.key,
+  });
+
+  @override
+  State<ResultsTable> createState() => _ResultsTableState();
+}
+
+class _ResultsTableState extends State<ResultsTable> {
+  // results = getResults()
+  late Future<List<Result>> futureResults;
+
+  @override
+  void initState() {
+    super.initState();
+    futureResults = loadResults();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<List<Result>>(
+      future: futureResults,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          return Center(child: Text('Error: ${snapshot.error}'));
+        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          return Center(child: Text('No results found.'));
+        } else {
+          final results = snapshot.data!;
+          return SingleChildScrollView(
+            child: DataTable(
+              columns: const [
+                DataColumn(label: Text('League ID')),
+                DataColumn(label: Text('Result ID')),
+                DataColumn(label: Text('Winner ID')),
+                DataColumn(label: Text('Loser ID')),
+                DataColumn(label: Text('Winner Score')),
+                DataColumn(label: Text('Loser Score')),
+                DataColumn(label: Text('Date')),
+              ],
+              rows: results.map((result) {
+                return DataRow(cells: [
+                  DataCell(Text(result.leagueId.toString())),
+                  DataCell(Text(result.resultId.toString())),
+                  DataCell(Text(result.winnerId.toString())),
+                  DataCell(Text(result.loserId.toString())),
+                  DataCell(Text(result.winnerScore)),
+                  DataCell(Text(result.loserScore)),
+                  DataCell(Text(result.date)),
+                ]);
+              }).toList(),
+            ),
+          );
+        }
+      },
     );
   }
 }
