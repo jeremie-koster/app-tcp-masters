@@ -15,4 +15,14 @@
     "winner_score": "7/5",
     "loser_score": "5/7",
     "date": "2024-06-3"
-}]
+},
+{
+    "league_id": 321,
+    "result_id": 9763,
+    "winner_id": 837,
+    "loser_id": 291,
+    "winner_score": "6/4",
+    "loser_score": "4/6",
+    "date": "2024-06-4"
+}
+]
