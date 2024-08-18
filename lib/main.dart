@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:tcp_masters/pages/user_dashboard.dart';
-import 'package:provider/provider.dart';
+import 'package:go_router/go_router.dart';
+import 'router/router.dart';
+import 'pages/scaffold.dart';
 
 void main() {
-  runApp(const TcpMastersApp());
+  runApp(TcpMastersApp());
 }
 
 class TcpMastersApp extends StatelessWidget {
@@ -11,7 +12,8 @@ class TcpMastersApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
+      routerConfig: appRouter,
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
@@ -19,7 +21,6 @@ class TcpMastersApp extends StatelessWidget {
             ColorScheme.fromSeed(seedColor: Color.fromRGBO(0, 52, 140, 1)),
         useMaterial3: true,
       ),
-      home: DashboardPage(),
     );
   }
 }
